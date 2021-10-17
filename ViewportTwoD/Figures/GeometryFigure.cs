@@ -1,8 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Media;
-
-namespace ViewportTwoD;
+﻿namespace ViewportTwoD;
 
 public class GeometryFigure : Figure
 {
@@ -23,23 +19,18 @@ public class GeometryFigure : Figure
             Stroke = stroke
         };
     }
-
-    //internal override void Update()
-    //{
-    //    _shape.Data = Path;
-    //}
-
-    internal override void Add(Canvas canvas)
+    
+    protected internal override void Add(Canvas canvas)
     {
         canvas.Children.Add(_shape);
     }
 
-    internal override void Remove(Canvas canvas)
+    protected internal override void Remove(Canvas canvas)
     {
         canvas.Children.Remove(_shape);
     }
 
-    internal override void Update(double deltaX, double deltaY, double zoom, Viewport viewport)
+    protected internal override void Update(double deltaX, double deltaY, double zoom, Viewport viewport)
     {
         _shape.Data = Path;
 

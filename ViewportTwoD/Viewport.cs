@@ -1,22 +1,28 @@
-﻿using System.Collections.ObjectModel;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Input;
-using Avalonia.Media;
-using Avalonia.Metadata;
-using Avalonia.Styling;
-
-namespace ViewportTwoD
+﻿namespace ViewportTwoD
 {
     public class Viewport : TemplatedControl, IStyleable
     {
-        private const string PART_MainCanvas = "PART_MainCanvas";
+        #region Constants
 
-        private Canvas _mainCanvas;
+        private const string PartMainCanvas = "PART_MainCanvas";
+
+        #endregion
+
+        #region Private Fields
+
+        private readonly CoordinateSystemLogic _coordinateSystem;
+
         private double _deltaX = 50;
         private double _deltaY = 50;
         private double _zoom = 1;
+
+        #endregion
+
+        #region Internal Fields
+
+        internal Canvas MainCanvas = null!;
+
+        #endregion
 
         #region Avalonia Properties
 
@@ -28,9 +34,6 @@ namespace ViewportTwoD
 
         public static StyledProperty<ObservableCollection<Figure>> FiguresProperty =
             AvaloniaProperty.Register<Viewport, ObservableCollection<Figure>>(nameof(Figures));
-
-        private bool _moving;
-        private Point _lastPoint;
 
         #endregion
 
@@ -96,20 +99,27 @@ namespace ViewportTwoD
 
         #endregion
 
+        #region Constructor
+
+        public Viewport()
+        {
+            _coordinateSystem = new CoordinateSystemLogic(this);
+        }
+
+        #endregion
+
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
             base.OnApplyTemplate(e);
 
-            _mainCanvas = e.NameScope.Find(PART_MainCanvas) as Canvas
-                          ?? throw new Exception($"{PART_MainCanvas} not found in current Style");
-
-            _mainCanvas.PointerMoved += MainCanvasOnPointerMoved;
+            MainCanvas = e.NameScope.Find(PartMainCanvas) as Canvas
+                         ?? throw new Exception($"{PartMainCanvas} not found in current Style");
 
             if (Figures != null)
             {
                 foreach (var figure in Figures)
                 {
-                    figure.Add(_mainCanvas);
+                    figure.Add(MainCanvas);
                     figure.Update(DeltaX, DeltaY, Zoom, this);
                 }
             }
@@ -123,66 +133,22 @@ namespace ViewportTwoD
 
         private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
         {
-            Zoom += e.Delta.Y * 0.5;
-        }
-
-
-        //protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change)
-        //{
-        //    base.OnPropertyChanged(change);
-
-        //    if (change.Property == FiguresProperty)
-        //    {
-        //        foreach (var figure in Figures)
-        //        {
-        //            ((GeometryFigure)figure).Add(_mainCanvas);
-        //        }
-        //    }
-        //}
-
-        private void MainCanvasOnPointerMoved(object? sender, PointerEventArgs e)
-        {
-            var pos = e.GetPosition(_mainCanvas);
-
-            var transform = new TransformGroup();
-            
-            transform.Children.Add(new TranslateTransform(DeltaX, DeltaY));
-            transform.Children.Add(new ScaleTransform(Zoom, Zoom));
-
-            var transformValue = transform.Value;
-
-            var (x, y) = pos.Transform(transform.Value);
-
-            X = (pos.X - DeltaX) / Zoom;
-            Y = (pos.Y - DeltaY) / Zoom;
+            _coordinateSystem.PointerWheelChanged(e);
         }
 
         private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
         {
-            _moving = true;
-            e.Pointer.Capture(_mainCanvas);
-            _lastPoint = e.GetPosition(_mainCanvas);
+            _coordinateSystem.PointerPressed(e);
         }
 
         private void OnPointerMoved(object? sender, PointerEventArgs e)
         {
-            if (_moving)
-            {
-                var point = e.GetPosition(_mainCanvas);
-
-                var (deltax, deltaY) = point - _lastPoint;
-
-                DeltaX += deltax;
-                DeltaY += deltaY;
-
-                _lastPoint = point;
-            }
+            _coordinateSystem.PointerMoved(e);
         }
 
         private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
         {
-            _moving = false;
-            e.Pointer.Capture(null);
+            _coordinateSystem.PointerReleased(e);
         }
 
         private void Update()
@@ -192,12 +158,9 @@ namespace ViewportTwoD
         }
 
         public Point GetGlobalPoint(Point localPoint)
-        {
-            return new Point((localPoint.X - DeltaX) / Zoom,
-                (localPoint.Y - DeltaY) / Zoom);
-        }
+            => _coordinateSystem.GetGlobalPoint(localPoint);
 
-        public Point GetLocalPoint(Point globalPoint) 
-            => new (globalPoint.X * Zoom + DeltaX, globalPoint.Y * Zoom + DeltaY);
+        public Point GetLocalPoint(Point globalPoint)
+            => _coordinateSystem.GetLocalPoint(globalPoint);
     }
 }

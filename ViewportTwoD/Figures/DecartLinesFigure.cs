@@ -1,9 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
-using Avalonia.Media;
-
-namespace ViewportTwoD;
+﻿namespace ViewportTwoD;
 
 public class DecartLinesFigure : Figure
 {
@@ -27,19 +22,19 @@ public class DecartLinesFigure : Figure
         };
     }
 
-    internal override void Add(Canvas canvas)
+    protected internal override void Add(Canvas canvas)
     {
         canvas.Children.Add(_lineX);
         canvas.Children.Add(_lineY);
     }
 
-    internal override void Remove(Canvas canvas)
+    protected internal override void Remove(Canvas canvas)
     {
         canvas.Children.Remove(_lineX);
         canvas.Children.Remove(_lineY);
     }
 
-    internal override void Update(double deltaX, double deltaY, double zoom, Viewport viewport)
+    protected internal override void Update(double deltaX, double deltaY, double zoom, Viewport viewport)
     {
         var xPoint1 = new Point(-10000, 0);
         var xPoint2 = new Point(10000, 0);

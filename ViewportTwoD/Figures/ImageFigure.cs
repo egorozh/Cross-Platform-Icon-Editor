@@ -1,7 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 
 namespace ViewportTwoD;
 
@@ -17,17 +14,17 @@ public class ImageFigure : Figure
         };
     }
 
-    internal override void Add(Canvas canvas)
+    protected internal override void Add(Canvas canvas)
     {
         canvas.Children.Add(_image);
     }
 
-    internal override void Remove(Canvas canvas)
+    protected internal override void Remove(Canvas canvas)
     {
         canvas.Children.Remove(_image);
     }
 
-    internal override void Update(double deltaX, double deltaY, double zoom, Viewport viewport)
+    protected internal override void Update(double deltaX, double deltaY, double zoom, Viewport viewport)
     {
         var transform = new TransformGroup();
 
