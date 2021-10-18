@@ -6,6 +6,7 @@ public class GeometryFigure : Figure
     private IBrush? _fill;
     private PathGeometry _path;
     private IBrush? _stroke;
+    private double _strokeThickness;
 
     /// <summary>
     /// In Global Coords
@@ -40,12 +41,23 @@ public class GeometryFigure : Figure
         }
     }
 
+    public double StrokeThickness
+    {
+        get => _strokeThickness;
+        set
+        {
+            _strokeThickness = value;
+            _shape.StrokeThickness = value;
+        }
+    }
+
     public GeometryFigure()
     {
         _shape = new Path()
         {
             Fill = Fill,
-            Stroke = Stroke
+            Stroke = Stroke,
+            StrokeThickness = StrokeThickness
         };
     }
 
