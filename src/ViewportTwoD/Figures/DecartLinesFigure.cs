@@ -20,7 +20,7 @@ public class DecartLinesFigure : Figure
         };
     }
 
-    protected internal override void Add(Canvas canvas)
+    protected internal override void Add(Canvas canvas, Viewport viewport)
     {
         canvas.Children.Add(_lineX);
         canvas.Children.Add(_lineY);

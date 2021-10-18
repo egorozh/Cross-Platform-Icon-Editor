@@ -10,13 +10,10 @@
 
         #region Private Fields
 
-        private IEnumerable<Figure> _items = new ObservableCollection<Figure>();
+        private IEnumerable<Figure>? _items = new ObservableCollection<Figure>();
 
         private readonly CoordinateSystemLogic _coordinateSystem;
-
-        private double _deltaX = 50;
-        private double _deltaY = 50;
-
+        
         #endregion
 
         #region Internal Fields
@@ -27,11 +24,17 @@
 
         #region Avalonia Properties
 
-        public static StyledProperty<double> XProperty =
-            AvaloniaProperty.Register<Viewport, double>(nameof(X));
+        public static StyledProperty<double> PointerXProperty =
+            AvaloniaProperty.Register<Viewport, double>(nameof(PointerX));
 
-        public static StyledProperty<double> YProperty =
-            AvaloniaProperty.Register<Viewport, double>(nameof(Y));
+        public static StyledProperty<double> PointerYProperty =
+            AvaloniaProperty.Register<Viewport, double>(nameof(PointerY));
+
+        public static StyledProperty<double> DeltaXProperty =
+            AvaloniaProperty.Register<Viewport, double>(nameof(DeltaX));
+
+        public static StyledProperty<double> DeltaYProperty =
+            AvaloniaProperty.Register<Viewport, double>(nameof(DeltaY));
 
         public static StyledProperty<double> ZoomProperty =
             AvaloniaProperty.Register<Viewport, double>(nameof(Zoom), 1.0,
@@ -39,8 +42,8 @@
 
         private static bool ValidateZoomProperty(double arg) => arg > 0;
 
-        public static readonly DirectProperty<Viewport, IEnumerable<Figure>> FiguresProperty =
-            AvaloniaProperty.RegisterDirect<Viewport, IEnumerable<Figure>>(nameof(Figures),
+        public static readonly DirectProperty<Viewport, IEnumerable<Figure>?> FiguresProperty =
+            AvaloniaProperty.RegisterDirect<Viewport, IEnumerable<Figure>?>(nameof(Figures),
                 o => o.Figures,
                 (o, v) => o.Figures = v);
 
@@ -48,20 +51,20 @@
 
         #region Public Properties
 
-        public double X
+        public double PointerX
         {
-            get => GetValue(XProperty);
-            set => SetValue(XProperty, value);
+            get => GetValue(PointerXProperty);
+            set => SetValue(PointerXProperty, value);
         }
 
-        public double Y
+        public double PointerY
         {
-            get => GetValue(YProperty);
-            set => SetValue(YProperty, value);
+            get => GetValue(PointerYProperty);
+            set => SetValue(PointerYProperty, value);
         }
 
         [Content]
-        public IEnumerable<Figure> Figures
+        public IEnumerable<Figure>? Figures
         {
             get => _items;
             set => SetAndRaise(FiguresProperty, ref _items, value);
@@ -69,22 +72,14 @@
 
         public double DeltaX
         {
-            get => _deltaX;
-            set
-            {
-                _deltaX = value;
-                Update();
-            }
+            get => GetValue(DeltaXProperty);
+            set => SetValue(DeltaXProperty, value);
         }
 
         public double DeltaY
         {
-            get => _deltaY;
-            set
-            {
-                _deltaY = value;
-                Update();
-            }
+            get => GetValue(DeltaYProperty);
+            set => SetValue(DeltaYProperty, value);
         }
 
         public double Zoom
@@ -121,7 +116,7 @@
             {
                 foreach (var figure in Figures)
                 {
-                    figure.Add(MainCanvas);
+                    figure.Add(MainCanvas, this);
                     figure.Update(this);
                 }
             }
@@ -137,11 +132,8 @@
         {
             base.OnPropertyChanged(change);
 
-            if (change.Property == ZoomProperty)
-            {
-                Update();
-            }
-            else if (change.Property == BoundsProperty)
+            if (change.Property == ZoomProperty || change.Property == BoundsProperty ||
+                change.Property == DeltaXProperty || change.Property == DeltaYProperty)
             {
                 Update();
             }
@@ -169,8 +161,9 @@
 
         private void Update()
         {
-            foreach (var figure in Figures)
-                figure.Update(this);
+            if (Figures != null)
+                foreach (var figure in Figures)
+                    figure.Update(this);
         }
 
         public Point GetGlobalPoint(Point localPoint)

@@ -11,10 +11,10 @@
                     VerticalAlignment="Center">
 
             <TextBlock Text="X:" />
-            <TextBlock Text="{Binding X, StringFormat={}{0:0.00}}" />
+            <TextBlock Text="{Binding PointerX, StringFormat={}{0:0.00}}" />
 
             <TextBlock Text="Y:" Margin="10 0 0 0" />
-            <TextBlock Text="{Binding Y, StringFormat={}{0:0.00}}" />
+            <TextBlock Text="{Binding PointerY, StringFormat={}{0:0.00}}" />
 
             <TextBlock Text="Zoom:" Margin="10 0 0 0" />
             <TextBlock Text="{Binding Zoom, StringFormat={}{0:0.00}}" />

@@ -4,19 +4,20 @@ public class GeometryFigure : Figure
 {
     private readonly Path _shape;
     private IBrush? _fill;
-    private PathGeometry _path;
+    private PathGeometry _geometry;
     private IBrush? _stroke;
     private double _strokeThickness;
+    private Viewport _viewport;
 
     /// <summary>
-    /// In Global Coords
+    /// In Global Coords    
     /// </summary>
-    public PathGeometry Path
+    public PathGeometry Geometry
     {
-        get => _path;
+        get => _geometry;
         set
         {
-            _path = value;
+            _geometry = value;
             _shape.Data = value;
         }
     }
@@ -28,7 +29,7 @@ public class GeometryFigure : Figure
         {
             _fill = value;
             _shape.Fill = value;
-        } 
+        }
     }
 
     public IBrush? Stroke
@@ -53,23 +54,25 @@ public class GeometryFigure : Figure
 
     public GeometryFigure()
     {
-        _shape = new Path()
+        _shape = new Path
         {
             Fill = Fill,
             Stroke = Stroke,
-            StrokeThickness = StrokeThickness
+            StrokeThickness = StrokeThickness,
+            RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute)
         };
     }
 
-    public GeometryFigure(PathGeometry path, IBrush fill, IBrush stroke) : this()
+    public GeometryFigure(PathGeometry geometry, IBrush fill, IBrush stroke) : this()
     {
-        Path = path;
+        Geometry = geometry;
         Fill = fill;
         Stroke = stroke;
     }
 
-    protected internal override void Add(Canvas canvas)
+    protected internal override void Add(Canvas canvas, Viewport viewport)
     {
+        _viewport = viewport;
         canvas.Children.Add(_shape);
     }
 
@@ -78,11 +81,8 @@ public class GeometryFigure : Figure
         canvas.Children.Remove(_shape);
     }
 
-    protected internal override void Update(Viewport viewport)
+    protected override void Update(Viewport viewport, Transform transform)
     {
-        _shape.Data = Path;
-        
-        _shape.RenderTransform = viewport.GetLocalTransform();
-        _shape.RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute);
+        _shape.RenderTransform = transform;
     }
 }

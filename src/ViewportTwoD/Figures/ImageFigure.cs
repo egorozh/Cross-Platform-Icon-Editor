@@ -14,7 +14,7 @@ public class ImageFigure : Figure
         };
     }
 
-    protected internal override void Add(Canvas canvas)
+    protected internal override void Add(Canvas canvas, Viewport viewport)
     {
         canvas.Children.Add(_image);
     }

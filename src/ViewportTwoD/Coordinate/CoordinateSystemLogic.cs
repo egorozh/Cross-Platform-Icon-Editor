@@ -70,6 +70,6 @@ internal class CoordinateSystemLogic
 
     private void UpdatePointerCoordinates(PointerEventArgs e)
     {
-        (_viewport.X, _viewport.Y) = GetGlobalPoint(e.GetPosition(_viewport.MainCanvas));
+        (_viewport.PointerX, _viewport.PointerY) = GetGlobalPoint(e.GetPosition(_viewport.MainCanvas));
     }
 }

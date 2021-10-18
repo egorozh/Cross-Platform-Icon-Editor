@@ -18,7 +18,11 @@ public class MainWindowViewModel : ViewModelBase
         Figures = new ObservableCollection<Figure>
         {
             new GeometryFigure(PathGeometry.Parse(data1), Brushes.Blue, Brushes.Green),
-            new GeometryFigure(PathGeometry.Parse(data2), Brushes.Red, Brushes.Violet),
+            new GeometryFigure(PathGeometry.Parse(data2), Brushes.Red, Brushes.Violet)
+            {
+                StrokeThickness = 1,
+                Transform = new TranslateTransform(100,100)
+            },
             new DecartLinesFigure()
         };
     }
