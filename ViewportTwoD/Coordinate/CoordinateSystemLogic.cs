@@ -20,6 +20,16 @@ internal class CoordinateSystemLogic
         => new(globalPoint.X * _viewport.Zoom + _viewport.DeltaX,
             globalPoint.Y * _viewport.Zoom + _viewport.DeltaY);
 
+    public Transform GetLocalTransform()
+    {
+        var transform = new TransformGroup();
+
+        transform.Children.Add(new ScaleTransform(_viewport.Zoom, _viewport.Zoom));
+        transform.Children.Add(new TranslateTransform(_viewport.DeltaX, _viewport.DeltaY));
+
+        return transform;
+    }
+
     public void PointerPressed(PointerPressedEventArgs e)
     {
         _moving = true;
@@ -52,7 +62,10 @@ internal class CoordinateSystemLogic
 
     public void PointerWheelChanged(PointerWheelEventArgs e)
     {
-        _viewport.Zoom += e.Delta.Y * 0.5;
+        var newZoom = (decimal) _viewport.Zoom + (decimal) e.Delta.Y * 0.2M;
+
+        if (newZoom > 0)
+            _viewport.Zoom = (double) newZoom;
     }
 
     private void UpdatePointerCoordinates(PointerEventArgs e)

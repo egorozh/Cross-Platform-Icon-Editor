@@ -21,4 +21,10 @@
     <ProjectReference Include="..\ViewportTwoD\ViewportTwoD.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Views\StatusBar.axaml.cs">
+      <DependentUpon>StatusBar.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

@@ -2,24 +2,60 @@
 
 public class GeometryFigure : Figure
 {
-    private readonly global::Avalonia.Controls.Shapes.Path _shape;
+    private readonly Path _shape;
+    private IBrush? _fill;
+    private PathGeometry _path;
+    private IBrush? _stroke;
 
     /// <summary>
     /// In Global Coords
     /// </summary>
-    public PathGeometry Path { get; }
-
-    public GeometryFigure(PathGeometry path, IBrush fill, IBrush stroke)
+    public PathGeometry Path
     {
-        Path = path;
-
-        _shape = new global::Avalonia.Controls.Shapes.Path()
+        get => _path;
+        set
         {
-            Fill = fill,
-            Stroke = stroke
+            _path = value;
+            _shape.Data = value;
+        }
+    }
+
+    public IBrush? Fill
+    {
+        get => _fill;
+        set
+        {
+            _fill = value;
+            _shape.Fill = value;
+        } 
+    }
+
+    public IBrush? Stroke
+    {
+        get => _stroke;
+        set
+        {
+            _stroke = value;
+            _shape.Stroke = value;
+        }
+    }
+
+    public GeometryFigure()
+    {
+        _shape = new Path()
+        {
+            Fill = Fill,
+            Stroke = Stroke
         };
     }
-    
+
+    public GeometryFigure(PathGeometry path, IBrush fill, IBrush stroke) : this()
+    {
+        Path = path;
+        Fill = fill;
+        Stroke = stroke;
+    }
+
     protected internal override void Add(Canvas canvas)
     {
         canvas.Children.Add(_shape);
@@ -30,16 +66,11 @@ public class GeometryFigure : Figure
         canvas.Children.Remove(_shape);
     }
 
-    protected internal override void Update(double deltaX, double deltaY, double zoom, Viewport viewport)
+    protected internal override void Update(Viewport viewport)
     {
         _shape.Data = Path;
-
-        var transform = new TransformGroup();
-
-        transform.Children.Add(new ScaleTransform(zoom, zoom));
-        transform.Children.Add(new TranslateTransform(deltaX,deltaY));
-     
-        _shape.RenderTransform = transform;
+        
+        _shape.RenderTransform = viewport.GetLocalTransform();
         _shape.RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute);
     }
 }

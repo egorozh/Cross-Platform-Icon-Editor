@@ -54,7 +54,7 @@ public class MainWindowViewModel : ViewModelBase
         {
             new GeometryFigure(data1, Brushes.Blue, Brushes.Green),
             new GeometryFigure(data2, Brushes.Red, Brushes.Violet),
-            new DecartLinesFigure(),
+            new DecartLinesFigure()
         };
     }
 }

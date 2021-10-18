@@ -24,14 +24,9 @@ public class ImageFigure : Figure
         canvas.Children.Remove(_image);
     }
 
-    protected internal override void Update(double deltaX, double deltaY, double zoom, Viewport viewport)
+    protected internal override void Update(Viewport viewport)
     {
-        var transform = new TransformGroup();
-
-        transform.Children.Add(new ScaleTransform(zoom, zoom));
-        transform.Children.Add(new TranslateTransform(deltaX, deltaY));
-
-        _image.RenderTransform = transform;
+        _image.RenderTransform = viewport.GetLocalTransform();
         _image.RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute);
     }
 }

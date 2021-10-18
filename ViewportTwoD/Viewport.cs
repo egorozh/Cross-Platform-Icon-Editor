@@ -10,11 +10,12 @@
 
         #region Private Fields
 
+        private IEnumerable<Figure> _items = new ObservableCollection<Figure>();
+
         private readonly CoordinateSystemLogic _coordinateSystem;
 
         private double _deltaX = 50;
         private double _deltaY = 50;
-        private double _zoom = 1;
 
         #endregion
 
@@ -32,8 +33,16 @@
         public static StyledProperty<double> YProperty =
             AvaloniaProperty.Register<Viewport, double>(nameof(Y));
 
-        public static StyledProperty<ObservableCollection<Figure>> FiguresProperty =
-            AvaloniaProperty.Register<Viewport, ObservableCollection<Figure>>(nameof(Figures));
+        public static StyledProperty<double> ZoomProperty =
+            AvaloniaProperty.Register<Viewport, double>(nameof(Zoom), 1.0,
+                validate: ValidateZoomProperty);
+
+        private static bool ValidateZoomProperty(double arg) => arg > 0;
+
+        public static readonly DirectProperty<Viewport, IEnumerable<Figure>> FiguresProperty =
+            AvaloniaProperty.RegisterDirect<Viewport, IEnumerable<Figure>>(nameof(Figures),
+                o => o.Figures,
+                (o, v) => o.Figures = v);
 
         #endregion
 
@@ -52,10 +61,10 @@
         }
 
         [Content]
-        public ObservableCollection<Figure> Figures
+        public IEnumerable<Figure> Figures
         {
-            get => GetValue(FiguresProperty);
-            set => SetValue(FiguresProperty, value);
+            get => _items;
+            set => SetAndRaise(FiguresProperty, ref _items, value);
         }
 
         public double DeltaX
@@ -80,15 +89,8 @@
 
         public double Zoom
         {
-            get => _zoom;
-            set
-            {
-                if (value <= 0)
-                    return;
-
-                _zoom = value;
-                Update();
-            }
+            get => GetValue(ZoomProperty);
+            set => SetValue(ZoomProperty, value);
         }
 
         #endregion
@@ -120,7 +122,7 @@
                 foreach (var figure in Figures)
                 {
                     figure.Add(MainCanvas);
-                    figure.Update(DeltaX, DeltaY, Zoom, this);
+                    figure.Update(this);
                 }
             }
 
@@ -129,6 +131,20 @@
             this.PointerMoved += OnPointerMoved;
 
             this.PointerWheelChanged += OnPointerWheelChanged;
+        }
+
+        protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change)
+        {
+            base.OnPropertyChanged(change);
+
+            if (change.Property == ZoomProperty)
+            {
+                Update();
+            }
+            else if (change.Property == BoundsProperty)
+            {
+                Update();
+            }
         }
 
         private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
@@ -154,7 +170,7 @@
         private void Update()
         {
             foreach (var figure in Figures)
-                figure.Update(DeltaX, DeltaY, Zoom, this);
+                figure.Update(this);
         }
 
         public Point GetGlobalPoint(Point localPoint)
@@ -162,5 +178,8 @@
 
         public Point GetLocalPoint(Point globalPoint)
             => _coordinateSystem.GetLocalPoint(globalPoint);
+
+        public Transform GetLocalTransform()
+            => _coordinateSystem.GetLocalTransform();
     }
 }
