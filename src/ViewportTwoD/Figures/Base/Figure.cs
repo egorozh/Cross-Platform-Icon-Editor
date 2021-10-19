@@ -21,19 +21,7 @@ public abstract class Figure : AvaloniaObject
     protected internal abstract void Add(Canvas canvas);
 
     protected internal abstract void Remove(Canvas canvas);
-
-    //protected internal virtual void Update()
-    //{
-    //    var transform = new TransformGroup();
-
-    //    if (Transform != null)
-    //        transform.Children.Add(Transform);
-
-    //    transform.Children.Add(Viewport.GetLocalTransform());
-
-    //    Update(transform);
-    //}
-
+      
     protected internal virtual void Update()
     {
         var matrix = Transform?.Value ?? Matrix.Identity;
