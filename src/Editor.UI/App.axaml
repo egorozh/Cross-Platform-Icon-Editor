@@ -1,10 +1,12 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:dialog="clr-namespace:Egorozh.ColorPicker.Dialog;assembly=Egorozh.ColorPicker.Avalonia.Dialog"
              x:Class="Editor.UI.App">
  
     <Application.Styles>
         <FluentTheme Mode="Dark" />
         <StyleInclude Source="avares://ViewportTwoD/Themes/Generic.axaml"/>
+        <dialog:FluentColorPickerTheme Mode="Dark" />
     </Application.Styles>
 
 </Application>

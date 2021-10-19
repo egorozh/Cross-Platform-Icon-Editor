@@ -7,8 +7,7 @@ public class GeometryFigure : Figure
     private PathGeometry _geometry;
     private IBrush? _stroke;
     private double _strokeThickness;
-    private Viewport _viewport;
-
+ 
     /// <summary>
     /// In Global Coords    
     /// </summary>
@@ -70,9 +69,8 @@ public class GeometryFigure : Figure
         Stroke = stroke;
     }
 
-    protected internal override void Add(Canvas canvas, Viewport viewport)
+    protected internal override void Add(Canvas canvas)
     {
-        _viewport = viewport;
         canvas.Children.Add(_shape);
     }
 
@@ -81,7 +79,7 @@ public class GeometryFigure : Figure
         canvas.Children.Remove(_shape);
     }
 
-    protected override void Update(Viewport viewport, Transform transform)
+    protected override void Update(Transform transform)
     {
         _shape.RenderTransform = transform;
     }

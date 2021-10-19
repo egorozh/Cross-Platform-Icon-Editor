@@ -6,8 +6,8 @@
     <Style Selector="local|Viewport">
         <Setter Property="Template">
             <ControlTemplate TargetType="local:Viewport">
-                <Grid>
-                    <Canvas Background="Gray"
+                <Grid Background="{TemplateBinding Background}">
+                    <Canvas Background="Transparent"
                             Name="PART_MainCanvas" />
                 </Grid>
             </ControlTemplate>

@@ -2,11 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:viewportTwoD="clr-namespace:ViewportTwoD;assembly=ViewportTwoD"
+             xmlns:dialog="clr-namespace:Egorozh.ColorPicker.Dialog;assembly=Egorozh.ColorPicker.Avalonia.Dialog"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Editor.UI.Views.StatusBar">
 
-    <Grid ColumnDefinitions="Auto * Auto">
+    <Grid ColumnDefinitions="Auto * Auto Auto">
         <StackPanel Orientation="Horizontal"
                     VerticalAlignment="Center">
 
@@ -21,7 +21,15 @@
 
         </StackPanel>
 
-        <Slider Grid.Column="2"
+        <StackPanel Grid.Column="2" Orientation="Horizontal"
+                    VerticalAlignment="Center">
+            <TextBlock Text="Background:" Margin="10 0 0 0" />
+            <dialog:ColorPickerButton Width="50"
+                                      Height="20"
+                                      Color="{Binding Background.Color, Mode=TwoWay}" />
+        </StackPanel>
+
+        <Slider Grid.Column="3"
                 Margin="10 0"
                 Minimum="0.01"
                 Maximum="30"

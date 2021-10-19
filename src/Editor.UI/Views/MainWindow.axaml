@@ -19,7 +19,10 @@
                              DeltaX="300"
                              DeltaY="500"
                              Zoom="4">
-                    <vt:DecartLinesFigure />
+                    <vt:Viewport.Background>
+                        <SolidColorBrush Color="Transparent"/>
+                    </vt:Viewport.Background>
+                    <vt:DecartLinesFigure Stroke="{DynamicResource AccentButtonForeground}" />
                     <vt:GeometryFigure Fill="Blue"
                                        Geometry="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z">
                         <vt:GeometryFigure.Transform>
@@ -45,7 +48,11 @@
                              Figures="{Binding Figures}"
                              DeltaX="50"
                              DeltaY="50"
-                             Zoom="4"/>
+                             Zoom="4">
+                    <vt:Viewport.Background>
+                        <SolidColorBrush Color="Transparent"/>
+                    </vt:Viewport.Background>
+                </vt:Viewport>
 
                 <views:StatusBar Grid.Row="1"
                                  DataContext="{Binding #Viewport2}" />

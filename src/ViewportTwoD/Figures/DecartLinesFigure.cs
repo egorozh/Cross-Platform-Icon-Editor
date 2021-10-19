@@ -1,26 +1,47 @@
-﻿namespace ViewportTwoD;
+﻿using Avalonia.Data;
+
+namespace ViewportTwoD;
 
 public class DecartLinesFigure : Figure
 {
     private readonly Line _lineX;
     private readonly Line _lineY;
 
+    public static StyledProperty<IBrush?> StrokeProperty =
+        AvaloniaProperty.Register<DecartLinesFigure, IBrush?>(nameof(Stroke), Brushes.Blue);
+
+    public IBrush? Stroke
+    {
+        get => GetValue(StrokeProperty);
+        set => SetValue(StrokeProperty, value);
+    }
+
     public DecartLinesFigure()
     {
         _lineX = new Line
         {
-            Stroke = Brushes.Blue,
             StrokeThickness = 1
         };
+
+        _lineX.Bind(Shape.StrokeProperty, new Binding()
+        {
+            Source = this,
+            Path = "Stroke"
+        });
 
         _lineY = new Line
         {
-            Stroke = Brushes.Blue,
             StrokeThickness = 1
         };
+
+        _lineY.Bind(Shape.StrokeProperty, new Binding()
+        {
+            Source = this,
+            Path = "Stroke"
+        });
     }
 
-    protected internal override void Add(Canvas canvas, Viewport viewport)
+    protected internal override void Add(Canvas canvas)
     {
         canvas.Children.Add(_lineX);
         canvas.Children.Add(_lineY);
@@ -32,44 +53,23 @@ public class DecartLinesFigure : Figure
         canvas.Children.Remove(_lineY);
     }
 
-    protected internal override void Update(Viewport viewport)
+    protected internal override void Update()
     {
-        var (centerX, centerY) = viewport.GetLocalPoint(new Point(0, 0));
+        var (centerX, centerY) = Viewport.GetLocalPoint(new Point(0, 0));
 
-        var width = viewport.Bounds.Width;
-        var height = viewport.Bounds.Height;
+        var width = Viewport.Bounds.Width;
+        var height = Viewport.Bounds.Height;
 
-        if (centerX > 0 && centerX < width)
-        {
-            _lineY.StartPoint = new Point(centerX, 0);
-            _lineY.EndPoint = new Point(centerX, height);
-        }
-        else
-        {
-            _lineY.StartPoint = new Point();
-            _lineY.EndPoint = new Point();
-        }
+        SetPoints(_lineY, centerX > 0 && centerX < width,
+            new Point(centerX, 0), new Point(centerX, height));
 
-        if (centerY > 0 && centerY < height)
-        {
-            _lineX.StartPoint = new Point(0, centerY);
-            _lineX.EndPoint = new Point(width, centerY);
-        }
-        else
-        {
-            _lineX.StartPoint = new Point();
-            _lineX.EndPoint = new Point();
-        }
+        SetPoints(_lineX, centerY > 0 && centerY < height,
+            new Point(0, centerY), new Point(width, centerY));
+    }
 
-        //var xPoint1 = new Point(-10000, 0);
-        //var xPoint2 = new Point(10000, 0);
-        //var yPoint1 = new Point(0, -10000);
-        //var yPoint2 = new Point(0, 10000);
-
-        //_lineX.StartPoint = viewport.GetLocalPoint(xPoint1);
-        //_lineX.EndPoint = viewport.GetLocalPoint(xPoint2);
-
-        //_lineY.StartPoint = viewport.GetLocalPoint(yPoint1);
-        //_lineY.EndPoint = viewport.GetLocalPoint(yPoint2);
+    private static void SetPoints(Line line, bool condition, in Point start, in Point end)
+    {
+        line.StartPoint = condition ? start : new Point();
+        line.EndPoint = condition ? end : new Point();
     }
 }

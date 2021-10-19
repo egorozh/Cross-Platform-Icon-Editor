@@ -10,11 +10,12 @@ public class ImageFigure : Figure
     {
         _image = new Image
         {
-            Source = new Bitmap(imagePath)
+            Source = new Bitmap(imagePath),
+            RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute)
         };
     }
 
-    protected internal override void Add(Canvas canvas, Viewport viewport)
+    protected internal override void Add(Canvas canvas)
     {
         canvas.Children.Add(_image);
     }
@@ -24,9 +25,8 @@ public class ImageFigure : Figure
         canvas.Children.Remove(_image);
     }
 
-    protected internal override void Update(Viewport viewport)
+    protected override void Update(Transform transform)
     {
-        _image.RenderTransform = viewport.GetLocalTransform();
-        _image.RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute);
+        _image.RenderTransform = transform;
     }
 }

@@ -2,6 +2,8 @@
 
 public abstract class Figure : AvaloniaObject
 {
+    protected Viewport Viewport { get; private set; } = null!;
+
     public static StyledProperty<Transform?> TransformProperty =
         AvaloniaProperty.Register<Figure, Transform?>(nameof(Transform));
 
@@ -11,23 +13,37 @@ public abstract class Figure : AvaloniaObject
         set => SetValue(TransformProperty, value);
     }
 
-    protected internal abstract void Add(Canvas canvas, Viewport viewport);
+    internal void Init(Viewport viewport)
+    {
+        Viewport = viewport;
+    }
+
+    protected internal abstract void Add(Canvas canvas);
 
     protected internal abstract void Remove(Canvas canvas);
 
-    protected internal virtual void Update(Viewport viewport)
+    //protected internal virtual void Update()
+    //{
+    //    var transform = new TransformGroup();
+
+    //    if (Transform != null)
+    //        transform.Children.Add(Transform);
+
+    //    transform.Children.Add(Viewport.GetLocalTransform());
+
+    //    Update(transform);
+    //}
+
+    protected internal virtual void Update()
     {
-        var transform = new TransformGroup();
+        var matrix = Transform?.Value ?? Matrix.Identity;
+        
+        matrix *= Viewport.GetLocalMatrix();
 
-        if (Transform != null)
-            transform.Children.Add(Transform);
-
-        transform.Children.Add(viewport.GetLocalTransform());
-
-        Update(viewport, transform);
+        Update(new MatrixTransform(matrix));
     }
 
-    protected virtual void Update(Viewport viewport, Transform transform)
+    protected virtual void Update(Transform transform)
     {
     }
 }

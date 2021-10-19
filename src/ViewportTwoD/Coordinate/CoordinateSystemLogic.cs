@@ -12,13 +12,21 @@ internal class CoordinateSystemLogic
         _viewport = viewport;
     }
 
-    public Point GetGlobalPoint(Point localPoint)
+    public Point GetGlobalPoint(in Point localPoint)
         => new((localPoint.X - _viewport.DeltaX) / _viewport.Zoom,
             (localPoint.Y - _viewport.DeltaY) / _viewport.Zoom);
 
-    public Point GetLocalPoint(Point globalPoint)
+    public Point GetLocalPoint(in Point globalPoint)
         => new(globalPoint.X * _viewport.Zoom + _viewport.DeltaX,
             globalPoint.Y * _viewport.Zoom + _viewport.DeltaY);
+
+    public Matrix GetLocalMatrix()
+    {
+        var matrix = MatrixHelper.ScaleAndTranslate(_viewport.Zoom, _viewport.Zoom,
+            _viewport.DeltaX, _viewport.DeltaY);
+
+        return matrix;
+    }
 
     public Transform GetLocalTransform()
     {
