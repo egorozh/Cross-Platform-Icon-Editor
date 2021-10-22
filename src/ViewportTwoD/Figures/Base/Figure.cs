@@ -28,10 +28,10 @@ public abstract class Figure : AvaloniaObject
         
         matrix *= Viewport.GetLocalMatrix();
 
-        Update(new MatrixTransform(matrix));
+        Update(matrix);
     }
 
-    protected virtual void Update(Transform transform)
+    protected virtual void Update(in Matrix transform)
     {
     }
 }

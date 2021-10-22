@@ -1,4 +1,6 @@
-﻿namespace ViewportTwoD;
+﻿using Avalonia.Media.Immutable;
+
+namespace ViewportTwoD;
 
 public class GeometryFigure : Figure
 {
@@ -7,7 +9,7 @@ public class GeometryFigure : Figure
     private PathGeometry _geometry;
     private IBrush? _stroke;
     private double _strokeThickness;
- 
+
     /// <summary>
     /// In Global Coords    
     /// </summary>
@@ -58,7 +60,8 @@ public class GeometryFigure : Figure
             Fill = Fill,
             Stroke = Stroke,
             StrokeThickness = StrokeThickness,
-            RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute)
+            RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute),
+            RenderTransform = new MatrixTransform()
         };
     }
 
@@ -79,8 +82,11 @@ public class GeometryFigure : Figure
         canvas.Children.Remove(_shape);
     }
 
-    protected override void Update(Transform transform)
+    protected override void Update(in Matrix transform)
     {
-        _shape.RenderTransform = transform;
+        ((MatrixTransform) _shape.RenderTransform).Matrix = transform;
+        //_shape.RenderTransform = new MatrixTransform(transform);
+
     }
 }
+    

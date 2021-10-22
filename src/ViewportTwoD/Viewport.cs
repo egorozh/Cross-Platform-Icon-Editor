@@ -110,7 +110,7 @@ public class Viewport : TemplatedControl, IStyleable
 
         MainCanvas = e.NameScope.Find(PartMainCanvas) as Canvas
                      ?? throw new Exception($"{PartMainCanvas} not found in current Style");
-
+        
         if (Figures != null)
         {
             foreach (var figure in Figures)
@@ -174,9 +174,6 @@ public class Viewport : TemplatedControl, IStyleable
     public Point GetLocalPoint(in Point globalPoint)
         => _coordinateSystem.GetLocalPoint(globalPoint);
 
-    public Transform GetLocalTransform()
-        => _coordinateSystem.GetLocalTransform(); 
-        
     public Matrix GetLocalMatrix()
         => _coordinateSystem.GetLocalMatrix();
 }

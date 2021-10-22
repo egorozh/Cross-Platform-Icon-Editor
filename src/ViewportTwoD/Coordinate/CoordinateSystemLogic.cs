@@ -27,17 +27,7 @@ internal class CoordinateSystemLogic
 
         return matrix;
     }
-
-    public Transform GetLocalTransform()
-    {
-        var transform = new TransformGroup();
-
-        transform.Children.Add(new ScaleTransform(_viewport.Zoom, _viewport.Zoom));
-        transform.Children.Add(new TranslateTransform(_viewport.DeltaX, _viewport.DeltaY));
-
-        return transform;
-    }
-
+    
     public void PointerPressed(PointerPressedEventArgs e)
     {
         _moving = true;

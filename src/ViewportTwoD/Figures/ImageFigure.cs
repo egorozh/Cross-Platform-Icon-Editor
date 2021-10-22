@@ -11,7 +11,8 @@ public class ImageFigure : Figure
         _image = new Image
         {
             Source = new Bitmap(imagePath),
-            RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute)
+            RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute),
+            RenderTransform = new MatrixTransform()
         };
     }
 
@@ -25,8 +26,8 @@ public class ImageFigure : Figure
         canvas.Children.Remove(_image);
     }
 
-    protected override void Update(Transform transform)
+    protected override void Update(in Matrix transform)
     {
-        _image.RenderTransform = transform;
+        ((MatrixTransform)_image.RenderTransform).Matrix = transform;
     }
 }
