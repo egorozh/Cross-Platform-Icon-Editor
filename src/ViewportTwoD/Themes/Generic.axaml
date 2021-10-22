@@ -7,7 +7,8 @@
         <Setter Property="Template">
             <ControlTemplate TargetType="local:Viewport">
                 <Grid Background="{TemplateBinding Background}">
-                    <Canvas Background="Transparent"
+					<!--<local:CanvasEx Name="PART_RenderCanvas"/>-->
+					<Canvas Background="Transparent"
                             Name="PART_MainCanvas" />
                 </Grid>
             </ControlTemplate>

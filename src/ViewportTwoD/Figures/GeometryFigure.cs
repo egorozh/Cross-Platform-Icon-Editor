@@ -1,6 +1,4 @@
-﻿using Avalonia.Media.Immutable;
-
-namespace ViewportTwoD;
+﻿namespace ViewportTwoD;
 
 public class GeometryFigure : Figure
 {
@@ -9,6 +7,7 @@ public class GeometryFigure : Figure
     private PathGeometry _geometry;
     private IBrush? _stroke;
     private double _strokeThickness;
+    private Pen _pen = new Pen();
 
     /// <summary>
     /// In Global Coords    
@@ -39,6 +38,7 @@ public class GeometryFigure : Figure
         set
         {
             _stroke = value;
+            _pen.Brush = value;
             _shape.Stroke = value;
         }
     }
@@ -49,6 +49,7 @@ public class GeometryFigure : Figure
         set
         {
             _strokeThickness = value;
+            _pen.Thickness = value;
             _shape.StrokeThickness = value;
         }
     }
@@ -84,9 +85,13 @@ public class GeometryFigure : Figure
 
     protected override void Update(in Matrix transform)
     {
-        ((MatrixTransform) _shape.RenderTransform).Matrix = transform;
+        ((MatrixTransform)_shape.RenderTransform).Matrix = transform;
         //_shape.RenderTransform = new MatrixTransform(transform);
+    }
 
+    protected override void Render(DrawingContext context, in Matrix transform)
+    {
+        using (context.PushPreTransform(transform))
+            context.DrawGeometry(Fill, _pen, Geometry);
     }
 }
-    

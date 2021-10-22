@@ -67,6 +67,20 @@ public class DecartLinesFigure : Figure
             new Point(0, centerY), new Point(width, centerY));
     }
 
+    protected internal override void Render(DrawingContext context)
+    {
+        var (centerX, centerY) = Viewport.GetLocalPoint(new Point(0, 0));
+
+        var width = Viewport.Bounds.Width;
+        var height = Viewport.Bounds.Height;
+        
+        if (centerX > 0 && centerX < width)
+            context.DrawLine(new Pen(Stroke), new Point(centerX, 0), new Point(centerX, height));
+
+        if (centerY > 0 && centerY < height)
+            context.DrawLine(new Pen(Stroke), new Point(0, centerY), new Point(width, centerY));
+    }
+
     private static void SetPoints(Line line, bool condition, in Point start, in Point end)
     {
         line.StartPoint = condition ? start : new Point();

@@ -5,6 +5,7 @@ public class Viewport : TemplatedControl, IStyleable
     #region Constants
 
     private const string PartMainCanvas = "PART_MainCanvas";
+    private const string PartRenderCanvas = "PART_RenderCanvas";
 
     #endregion
 
@@ -19,6 +20,7 @@ public class Viewport : TemplatedControl, IStyleable
     #region Internal Fields
 
     internal Canvas MainCanvas = null!;
+    internal CanvasEx RenderCanvas = null!;
 
     #endregion
 
@@ -110,7 +112,12 @@ public class Viewport : TemplatedControl, IStyleable
 
         MainCanvas = e.NameScope.Find(PartMainCanvas) as Canvas
                      ?? throw new Exception($"{PartMainCanvas} not found in current Style");
-        
+
+        //RenderCanvas = e.NameScope.Find(PartRenderCanvas) as CanvasEx
+        //               ?? throw new Exception($"{PartRenderCanvas} not found in current Style");
+
+        //RenderCanvas.Init(this);
+
         if (Figures != null)
         {
             foreach (var figure in Figures)
@@ -120,6 +127,8 @@ public class Viewport : TemplatedControl, IStyleable
                 figure.Update();
             }
         }
+
+        //RenderCanvas.InvalidateVisual();
 
         this.PointerPressed += OnPointerPressed;
         this.PointerReleased += OnPointerReleased;
@@ -164,6 +173,7 @@ public class Viewport : TemplatedControl, IStyleable
         if (Figures == null)
             return;
 
+        //RenderCanvas?.InvalidateVisual();
         foreach (var figure in Figures)
             figure.Update();
     }

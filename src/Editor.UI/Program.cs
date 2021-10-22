@@ -13,6 +13,7 @@ internal class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            //.UseDirect2D1()
             .LogToTrace()
             .UseReactiveUI();
 }
