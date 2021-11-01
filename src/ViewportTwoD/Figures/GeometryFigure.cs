@@ -2,7 +2,6 @@
 
 public class GeometryFigure : Figure
 {
-    private readonly Path _shape;
     private IBrush? _fill;
     private PathGeometry _geometry;
     private IBrush? _stroke;
@@ -18,7 +17,6 @@ public class GeometryFigure : Figure
         set
         {
             _geometry = value;
-            _shape.Data = value;
         }
     }
 
@@ -28,7 +26,6 @@ public class GeometryFigure : Figure
         set
         {
             _fill = value;
-            _shape.Fill = value;
         }
     }
 
@@ -39,7 +36,6 @@ public class GeometryFigure : Figure
         {
             _stroke = value;
             _pen.Brush = value;
-            _shape.Stroke = value;
         }
     }
 
@@ -50,45 +46,18 @@ public class GeometryFigure : Figure
         {
             _strokeThickness = value;
             _pen.Thickness = value;
-            _shape.StrokeThickness = value;
         }
     }
 
-    public GeometryFigure()
-    {
-        _shape = new Path
-        {
-            Fill = Fill,
-            Stroke = Stroke,
-            StrokeThickness = StrokeThickness,
-            RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute),
-            RenderTransform = new MatrixTransform()
-        };
-    }
+    public GeometryFigure() { }
 
-    public GeometryFigure(PathGeometry geometry, IBrush fill, IBrush stroke) : this()
+    public GeometryFigure(PathGeometry geometry, IBrush fill, IBrush stroke)
     {
         Geometry = geometry;
         Fill = fill;
         Stroke = stroke;
     }
-
-    protected internal override void Add(Canvas canvas)
-    {
-        canvas.Children.Add(_shape);
-    }
-
-    protected internal override void Remove(Canvas canvas)
-    {
-        canvas.Children.Remove(_shape);
-    }
-
-    protected override void Update(in Matrix transform)
-    {
-        ((MatrixTransform)_shape.RenderTransform).Matrix = transform;
-        //_shape.RenderTransform = new MatrixTransform(transform);
-    }
-
+    
     protected override void Render(DrawingContext context, in Matrix transform)
     {
         using (context.PushPreTransform(transform))

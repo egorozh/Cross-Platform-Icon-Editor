@@ -113,22 +113,18 @@ public class Viewport : TemplatedControl, IStyleable
         MainCanvas = e.NameScope.Find(PartMainCanvas) as Canvas
                      ?? throw new Exception($"{PartMainCanvas} not found in current Style");
 
-        //RenderCanvas = e.NameScope.Find(PartRenderCanvas) as CanvasEx
-        //               ?? throw new Exception($"{PartRenderCanvas} not found in current Style");
+        RenderCanvas = e.NameScope.Find(PartRenderCanvas) as CanvasEx
+                       ?? throw new Exception($"{PartRenderCanvas} not found in current Style");
 
-        //RenderCanvas.Init(this);
+        RenderCanvas.Init(this);
 
         if (Figures != null)
         {
-            foreach (var figure in Figures)
-            {
+            foreach (var figure in Figures) 
                 figure.Init(this);
-                figure.Add(MainCanvas);
-                figure.Update();
-            }
         }
 
-        //RenderCanvas.InvalidateVisual();
+        RenderCanvas.InvalidateVisual();
 
         this.PointerPressed += OnPointerPressed;
         this.PointerReleased += OnPointerReleased;
@@ -173,9 +169,7 @@ public class Viewport : TemplatedControl, IStyleable
         if (Figures == null)
             return;
 
-        //RenderCanvas?.InvalidateVisual();
-        foreach (var figure in Figures)
-            figure.Update();
+        RenderCanvas?.InvalidateVisual();
     }
 
     public Point GetGlobalPoint(in Point localPoint)
