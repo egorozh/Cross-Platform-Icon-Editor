@@ -127,6 +127,21 @@ public class Viewport : TemplatedControl, IStyleable
 
     #endregion
 
+    #region Public Methods
+
+    public Point GetGlobalPoint(in Point localPoint)
+        => _coordinateSystem.GetGlobalPoint(localPoint);
+
+    public Point GetLocalPoint(in Point globalPoint)
+        => _coordinateSystem.GetLocalPoint(globalPoint);
+
+    public Matrix GetLocalMatrix()
+        => _coordinateSystem.GetLocalMatrix();
+
+    #endregion
+
+    #region Protected Methods
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -154,7 +169,7 @@ public class Viewport : TemplatedControl, IStyleable
         this.PointerWheelChanged += OnPointerWheelChanged;
     }
 
-    protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) 
+    protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change)
     {
         base.OnPropertyChanged(change);
 
@@ -172,6 +187,10 @@ public class Viewport : TemplatedControl, IStyleable
             UpdateFigures();
         }
     }
+
+    #endregion
+
+    #region Private Methods
 
     private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
@@ -198,12 +217,5 @@ public class Viewport : TemplatedControl, IStyleable
         RenderCanvas?.InvalidateVisual();
     }
 
-    public Point GetGlobalPoint(in Point localPoint)
-        => _coordinateSystem.GetGlobalPoint(localPoint);
-
-    public Point GetLocalPoint(in Point globalPoint)
-        => _coordinateSystem.GetLocalPoint(globalPoint);
-
-    public Matrix GetLocalMatrix()
-        => _coordinateSystem.GetLocalMatrix();
+    #endregion
 }

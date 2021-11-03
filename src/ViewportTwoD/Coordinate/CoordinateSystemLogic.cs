@@ -30,12 +30,12 @@ internal class CoordinateSystemLogic
 
     public Matrix GetGlobalMatrix()
     {
-        var matrix = MatrixHelper.Rotation(-_viewport.Angle, _viewport.DeltaX, _viewport.DeltaY);
+        var matrix = MatrixHelper.Rotation(-_viewport.Angle * (Math.PI / 180.0), _viewport.DeltaX, _viewport.DeltaY);
 
-        matrix = MatrixHelper.TranslatePrepend(matrix, -_viewport.DeltaX, -_viewport.DeltaY);
+        matrix *= MatrixHelper.Translate(-_viewport.DeltaX, -_viewport.DeltaY);
 
-        matrix = MatrixHelper.Scale(_viewport.Resolution, _viewport.Resolution) * matrix;
-        
+        matrix *= MatrixHelper.Scale(_viewport.Resolution, _viewport.Resolution);
+
         return matrix;
     }
 
@@ -71,14 +71,53 @@ internal class CoordinateSystemLogic
 
     public void PointerWheelChanged(PointerWheelEventArgs e)
     {
-        var newZoom = (decimal) _viewport.Zoom + (decimal) e.Delta.Y * 0.2M;
+        var cursorPos = e.GetPosition(_viewport.MainCanvas);
 
-        if (newZoom > 0)
-            _viewport.Zoom = (double) newZoom;
+        var globalPos = GetGlobalPoint(cursorPos);
+        (_viewport.PointerX, _viewport.PointerY) = globalPos;
+
+        Scalling(e.Delta.Y, cursorPos, globalPos);
     }
 
     private void UpdatePointerCoordinates(PointerEventArgs e)
     {
         (_viewport.PointerX, _viewport.PointerY) = GetGlobalPoint(e.GetPosition(_viewport.MainCanvas));
+    }
+
+    private void Scalling(double delta, Point localPos, Point globalPoint)
+    {
+        if (Math.Sign(delta) < 0)
+        {
+            if (_viewport.Zoom <= 0.2)
+                return;
+
+            _viewport.Zoom -= GetSubDelta(_viewport.Zoom);
+        }
+        else
+        {
+            if (_viewport.Zoom >= 140)
+                return;
+
+            _viewport.Zoom += GetAddDelta(_viewport.Zoom);
+        }
+        
+        var newZoom = (decimal) _viewport.Zoom + (decimal) delta * 0.2M;
+
+        if (newZoom > 0)
+            _viewport.Zoom = (double) newZoom;
+
+        var (newLocalX, newLocalY) = GetLocalPoint(globalPoint);
+        _viewport.DeltaX -= newLocalX - localPos.X;
+        _viewport.DeltaY -= newLocalY - localPos.Y;
+    }
+
+    private double GetAddDelta(double oldZoom)
+    {
+        return (double) 0.2M;
+    }
+
+    private double GetSubDelta(double oldZoom)
+    {
+        return (double) 0.2M;
     }
 }
