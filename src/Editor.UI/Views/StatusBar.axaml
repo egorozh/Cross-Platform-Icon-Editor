@@ -6,7 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Editor.UI.Views.StatusBar">
 
-    <Grid ColumnDefinitions="Auto * Auto Auto">
+    <Grid ColumnDefinitions="Auto * Auto Auto Auto">
         <StackPanel Orientation="Horizontal"
                     VerticalAlignment="Center">
 
@@ -17,8 +17,10 @@
             <TextBlock Text="{Binding PointerY, StringFormat={}{0:0.00}}" />
 
             <TextBlock Text="Zoom:" Margin="10 0 0 0" />
-            <TextBlock Text="{Binding Zoom, StringFormat={}{0:0.00}}" />
+            <TextBlock Text="{Binding Zoom, StringFormat={}{0:0.0000}}" />
 
+            <TextBlock Text="Resolution:" Margin="10 0 0 0" />
+            <TextBlock Text="{Binding Resolution, StringFormat={}{0:0.0000}}" />
         </StackPanel>
 
         <StackPanel Grid.Column="2" Orientation="Horizontal"
@@ -32,8 +34,15 @@
         <Slider Grid.Column="3"
                 Margin="10 0"
                 Minimum="0.01"
-                Maximum="30"
+                Maximum="100"
                 Value="{Binding Zoom, Mode=TwoWay}"
+                Width="200" />
+
+        <Slider Grid.Column="4"
+                Margin="10 0"
+                Minimum="-180"
+                Maximum="180"
+                Value="{Binding Angle, Mode=TwoWay}"
                 Width="200" />
     </Grid>
 </UserControl>

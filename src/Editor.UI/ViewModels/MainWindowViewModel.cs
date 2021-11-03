@@ -1,5 +1,5 @@
-﻿using System;
-using Avalonia.Media;
+﻿using Avalonia.Media;
+using System;
 using System.Collections.ObjectModel;
 using ViewportTwoD;
 
@@ -29,7 +29,7 @@ public class MainWindowViewModel : ViewModelBase
 
         var random = new Random(458);
 
-        for (var i = 0; i < 10000; i++) 
+        for (var i = 0; i < 1000; i++) 
             figures.Add(CreateRandomFigure(random, data1));
 
         Figures = figures;

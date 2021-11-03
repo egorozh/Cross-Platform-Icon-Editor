@@ -13,21 +13,32 @@ internal class CoordinateSystemLogic
     }
 
     public Point GetGlobalPoint(in Point localPoint)
-        => new((localPoint.X - _viewport.DeltaX) / _viewport.Zoom,
-            (localPoint.Y - _viewport.DeltaY) / _viewport.Zoom);
+        => MatrixHelper.TransformPoint(GetGlobalMatrix(), localPoint);
 
     public Point GetLocalPoint(in Point globalPoint)
-        => new(globalPoint.X * _viewport.Zoom + _viewport.DeltaX,
-            globalPoint.Y * _viewport.Zoom + _viewport.DeltaY);
+        => MatrixHelper.TransformPoint(GetLocalMatrix(), globalPoint);
 
     public Matrix GetLocalMatrix()
     {
         var matrix = MatrixHelper.ScaleAndTranslate(_viewport.Zoom, _viewport.Zoom,
             _viewport.DeltaX, _viewport.DeltaY);
 
+        matrix = MatrixHelper.RotateAt(matrix, _viewport.Angle, _viewport.DeltaX, _viewport.DeltaY);
+
         return matrix;
     }
-    
+
+    public Matrix GetGlobalMatrix()
+    {
+        var matrix = MatrixHelper.Rotation(-_viewport.Angle, _viewport.DeltaX, _viewport.DeltaY);
+
+        matrix = MatrixHelper.TranslatePrepend(matrix, -_viewport.DeltaX, -_viewport.DeltaY);
+
+        matrix = MatrixHelper.Scale(_viewport.Resolution, _viewport.Resolution) * matrix;
+        
+        return matrix;
+    }
+
     public void PointerPressed(PointerPressedEventArgs e)
     {
         _moving = true;

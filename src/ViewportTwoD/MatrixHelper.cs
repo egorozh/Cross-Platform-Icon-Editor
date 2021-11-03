@@ -118,4 +118,11 @@ public static class MatrixHelper
     public static Point TransformPoint(in Matrix matrix, in Point point)
         => new((point.X * matrix.M11) + (point.Y * matrix.M21) + matrix.M31,
             (point.X * matrix.M12) + (point.Y * matrix.M22) + matrix.M32);
+
+    public static Matrix RotateAt(Matrix matrix, double angle, in double centerX, in double centerY)
+    {
+        angle %= 360.0; // Doing the modulo before converting to radians reduces total error
+        matrix *= Rotation(angle * (PI / 180.0), centerX, centerY);
+        return matrix;
+    }
 }

@@ -15,6 +15,8 @@ public class Viewport : TemplatedControl, IStyleable
 
     private readonly CoordinateSystemLogic _coordinateSystem;
 
+    private double _resolution;
+
     #endregion
 
     #region Internal Fields
@@ -38,11 +40,18 @@ public class Viewport : TemplatedControl, IStyleable
     public static StyledProperty<double> DeltaYProperty =
         AvaloniaProperty.Register<Viewport, double>(nameof(DeltaY));
 
+    public static StyledProperty<double> AngleProperty =
+        AvaloniaProperty.Register<Viewport, double>(nameof(Angle));
+
     public static StyledProperty<double> ZoomProperty =
         AvaloniaProperty.Register<Viewport, double>(nameof(Zoom), 1.0,
-            validate: ValidateZoomProperty);
+            coerce: ValidateZoomProperty);
 
-    private static bool ValidateZoomProperty(double arg) => arg > 0;
+    public static DirectProperty<Viewport, double> ResolutionProperty =
+        AvaloniaProperty.RegisterDirect<Viewport, double>("Resolution",
+            v => v.Resolution);
+
+    private static double ValidateZoomProperty(IAvaloniaObject v, double arg) => arg > 0 ? arg : 0.001;
 
     public static readonly DirectProperty<Viewport, IEnumerable<Figure>?> FiguresProperty =
         AvaloniaProperty.RegisterDirect<Viewport, IEnumerable<Figure>?>
@@ -83,10 +92,22 @@ public class Viewport : TemplatedControl, IStyleable
         set => SetValue(DeltaYProperty, value);
     }
 
+    public double Angle
+    {
+        get => GetValue(AngleProperty);
+        set => SetValue(AngleProperty, value);
+    }
+
     public double Zoom
     {
         get => GetValue(ZoomProperty);
         set => SetValue(ZoomProperty, value);
+    }
+
+    public double Resolution
+    {
+        get => _resolution;
+        private set => SetAndRaise(ResolutionProperty, ref _resolution, value);
     }
 
     #endregion
@@ -120,7 +141,7 @@ public class Viewport : TemplatedControl, IStyleable
 
         if (Figures != null)
         {
-            foreach (var figure in Figures) 
+            foreach (var figure in Figures)
                 figure.Init(this);
         }
 
@@ -133,12 +154,20 @@ public class Viewport : TemplatedControl, IStyleable
         this.PointerWheelChanged += OnPointerWheelChanged;
     }
 
-    protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change)
+    protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change) 
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == ZoomProperty || change.Property == BoundsProperty ||
-            change.Property == DeltaXProperty || change.Property == DeltaYProperty)
+        var prop = change.Property;
+
+        if (prop == ZoomProperty)
+        {
+            Resolution = (double) (1M / (decimal) Zoom);
+            UpdateFigures();
+        }
+        else if (prop == BoundsProperty || prop == DeltaXProperty ||
+                 prop == DeltaYProperty || prop == ResolutionProperty ||
+                 prop == AngleProperty)
         {
             UpdateFigures();
         }
@@ -166,9 +195,6 @@ public class Viewport : TemplatedControl, IStyleable
 
     private void UpdateFigures()
     {
-        if (Figures == null)
-            return;
-
         RenderCanvas?.InvalidateVisual();
     }
 
