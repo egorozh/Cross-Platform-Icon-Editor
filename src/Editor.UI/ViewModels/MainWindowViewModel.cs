@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using ViewportTwoD;
 
 namespace Editor.UI.ViewModels;
@@ -8,6 +9,8 @@ namespace Editor.UI.ViewModels;
 public class MainWindowViewModel : ViewModelBase
 {
     public ObservableCollection<Figure> Figures { get; }
+
+    public ObservableCollection<Figure> FiguresWithoutHelpFigures { get; }
 
     public MainWindowViewModel()
     {
@@ -18,30 +21,44 @@ public class MainWindowViewModel : ViewModelBase
 
         var figures = new ObservableCollection<Figure>
         {
+            new DecartLinesFigure {IsShow = true},
             new GeometryFigure(PathGeometry.Parse(data1), Brushes.Blue, Brushes.Green),
             new GeometryFigure(PathGeometry.Parse(data2), Brushes.Red, Brushes.Violet)
             {
                 StrokeThickness = 1,
                 Transform = new TranslateTransform(100, 100)
-            },
-            new DecartLinesFigure()
+            }
+        };
+
+        var figuresWithoutHelpFigures = new ObservableCollection<Figure>
+        {
+            new GeometryFigure(PathGeometry.Parse(data1), Brushes.Blue, Brushes.Green),
+            new GeometryFigure(PathGeometry.Parse(data2), Brushes.Red, Brushes.Violet)
+            {
+                StrokeThickness = 1,
+                Transform = new TranslateTransform(100, 100)
+            }
         };
 
         var random = new Random(458);
 
-        for (var i = 0; i < 1000; i++) 
+        for (var i = 0; i < 1000; i++)
+        {
             figures.Add(CreateRandomFigure(random, data1));
+            figuresWithoutHelpFigures.Add(CreateRandomFigure(random, data1));
+        }
 
         Figures = figures;
+        FiguresWithoutHelpFigures = new ObservableCollection<Figure>(figuresWithoutHelpFigures);
     }
 
     private static GeometryFigure CreateRandomFigure(Random random, string data)
     {
         var fillColor = Color.FromUInt32((uint) random
-            .Next(unchecked((int) 0xff000000),int.MaxValue));
-        var strokeColor = Color.FromUInt32((uint)random
-            .Next(unchecked((int) 0xff000000),int.MaxValue));
-        
+            .Next(unchecked((int) 0xff000000), int.MaxValue));
+        var strokeColor = Color.FromUInt32((uint) random
+            .Next(unchecked((int) 0xff000000), int.MaxValue));
+
         return new GeometryFigure(PathGeometry.Parse(data),
             new SolidColorBrush(fillColor), new SolidColorBrush(strokeColor))
         {

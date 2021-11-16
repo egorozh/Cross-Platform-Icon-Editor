@@ -7,34 +7,31 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Editor.UI.Tabs.XamlTab">
 
-    <Border BorderThickness="1"
-            BorderBrush="#333333">
-        <Grid RowDefinitions="* Auto">
+    <Grid RowDefinitions="* Auto">
 
-            <vt:Viewport Name="Viewport"
-                         DeltaX="300"
-                         DeltaY="500"
-                         Zoom="4">
+        <vt:Viewport Name="Viewport"
+                     DeltaX="300"
+                     DeltaY="500"
+                     Zoom="4">
 
-                <vt:Viewport.Background>
-                    <SolidColorBrush Color="Transparent" />
-                </vt:Viewport.Background>
+            <vt:Viewport.Background>
+                <SolidColorBrush Color="Transparent" />
+            </vt:Viewport.Background>
 
-                <vt:DecartLinesFigure Stroke="{DynamicResource AccentButtonForeground}"
-                                      IsShow="True" />
+            <vt:DecartLinesFigure Stroke="{DynamicResource AccentButtonForeground}"
+                                  IsShow="True" />
 
-                <vt:GeometryFigure Fill="Blue"
-                                   Geometry="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z">
-                    <vt:GeometryFigure.Transform>
-                        <TranslateTransform X="-50" Y="-100" />
-                    </vt:GeometryFigure.Transform>
-                </vt:GeometryFigure>
-            </vt:Viewport>
+            <vt:GeometryFigure Fill="Blue"
+                               Geometry="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z">
+                <vt:GeometryFigure.Transform>
+                    <TranslateTransform X="-50" Y="-100" />
+                </vt:GeometryFigure.Transform>
+            </vt:GeometryFigure>
+        </vt:Viewport>
 
-            <views:StatusBar Grid.Row="1"
-                             DataContext="{Binding #Viewport}" />
+        <views:StatusBar Grid.Row="1"
+                         DataContext="{Binding #Viewport}" />
 
-        </Grid>
-    </Border>
+    </Grid>
 
 </UserControl>

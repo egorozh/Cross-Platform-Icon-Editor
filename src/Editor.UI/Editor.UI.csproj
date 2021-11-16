@@ -15,6 +15,7 @@
 		<PackageReference Include="Avalonia.Desktop" Version="0.10.10" />
 		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.10" />
 		<PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
+		<PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.10.3" />
 		<PackageReference Include="Egorozh.ColorPicker.Avalonia.Dialog" Version="0.10.7" />
 	</ItemGroup>
 

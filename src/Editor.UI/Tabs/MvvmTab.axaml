@@ -7,23 +7,20 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Editor.UI.Tabs.MvvmTab">
 
-    <Border BorderThickness="1"
-            BorderBrush="#333333">
-        <Grid RowDefinitions="* Auto">
-            <viewportTwoD:Viewport Name="Viewport2"
-                                   Figures="{Binding Figures}"
-                                   DeltaX="50"
-                                   DeltaY="50"
-                                   Zoom="4">
-                <viewportTwoD:Viewport.Background>
-                    <SolidColorBrush Color="Transparent" />
-                </viewportTwoD:Viewport.Background>
-            </viewportTwoD:Viewport>
+    <Grid RowDefinitions="* Auto">
+        <viewportTwoD:Viewport Name="Viewport2"
+                               Figures="{Binding Figures}"
+                               DeltaX="50"
+                               DeltaY="50"
+                               Zoom="4">
+            <viewportTwoD:Viewport.Background>
+                <SolidColorBrush Color="Transparent" />
+            </viewportTwoD:Viewport.Background>
+        </viewportTwoD:Viewport>
 
-            <views:StatusBar Grid.Row="1"
-                             DataContext="{Binding #Viewport2}" />
+        <views:StatusBar Grid.Row="1"
+                         DataContext="{Binding #Viewport2}" />
 
-        </Grid>
-    </Border>
+    </Grid>
 
 </UserControl>
