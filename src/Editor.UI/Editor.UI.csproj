@@ -22,4 +22,16 @@
 		<ProjectReference Include="..\ViewportTwoD\ViewportTwoD.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="Tabs\MixTab.axaml.cs">
+	    <DependentUpon>MixTab.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Tabs\XamlTab.axaml.cs">
+	    <DependentUpon>XamlTab.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Tabs\MvvmTab.axaml.cs">
+	    <DependentUpon>MvvmTab.axaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
 </Project>

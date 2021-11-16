@@ -1,16 +1,26 @@
 ﻿namespace ViewportTwoD;
 
-internal class CoordinateSystemLogic
+public class CoordinateSystem
 {
+    #region Private Fields
+
     private readonly Viewport _viewport;
 
     private bool _moving;
     private Point _lastPoint;
 
-    public CoordinateSystemLogic(Viewport viewport)
+    #endregion
+
+    #region Constructor
+
+    public CoordinateSystem(Viewport viewport)
     {
         _viewport = viewport;
     }
+
+    #endregion
+    
+    #region Public Methods
 
     public Point GetGlobalPoint(in Point localPoint)
         => MatrixHelper.TransformPoint(GetGlobalMatrix(), localPoint);
@@ -39,14 +49,18 @@ internal class CoordinateSystemLogic
         return matrix;
     }
 
-    public void PointerPressed(PointerPressedEventArgs e)
+    #endregion
+
+    #region Internal Methods
+
+    internal void PointerPressed(PointerPressedEventArgs e)
     {
         _moving = true;
         e.Pointer.Capture(_viewport.MainCanvas);
         _lastPoint = e.GetPosition(_viewport.MainCanvas);
     }
 
-    public void PointerMoved(PointerEventArgs e)
+    internal void PointerMoved(PointerEventArgs e)
     {
         UpdatePointerCoordinates(e);
 
@@ -63,13 +77,13 @@ internal class CoordinateSystemLogic
         _lastPoint = point;
     }
 
-    public void PointerReleased(PointerReleasedEventArgs e)
+    internal void PointerReleased(PointerReleasedEventArgs e)
     {
         _moving = false;
         e.Pointer.Capture(null);
     }
 
-    public void PointerWheelChanged(PointerWheelEventArgs e)
+    internal void PointerWheelChanged(PointerWheelEventArgs e)
     {
         var cursorPos = e.GetPosition(_viewport.MainCanvas);
 
@@ -78,6 +92,10 @@ internal class CoordinateSystemLogic
 
         Scalling(e.Delta.Y, cursorPos, globalPos);
     }
+
+    #endregion
+
+    #region Private Methods
 
     private void UpdatePointerCoordinates(PointerEventArgs e)
     {
@@ -100,7 +118,7 @@ internal class CoordinateSystemLogic
 
             _viewport.Zoom += GetAddDelta(_viewport.Zoom);
         }
-        
+
         var newZoom = (decimal) _viewport.Zoom + (decimal) delta * 0.2M;
 
         if (newZoom > 0)
@@ -120,4 +138,6 @@ internal class CoordinateSystemLogic
     {
         return (double) 0.2M;
     }
+
+    #endregion
 }

@@ -12,9 +12,7 @@ public class Viewport : TemplatedControl, IStyleable
     #region Private Fields
 
     private IEnumerable<Figure>? _items = new ObservableCollection<Figure>();
-
-    private readonly CoordinateSystemLogic _coordinateSystem;
-
+    
     private double _resolution;
 
     #endregion
@@ -56,10 +54,12 @@ public class Viewport : TemplatedControl, IStyleable
     public static readonly DirectProperty<Viewport, IEnumerable<Figure>?> FiguresProperty =
         AvaloniaProperty.RegisterDirect<Viewport, IEnumerable<Figure>?>
             (nameof(Figures), o => o.Figures, (o, v) => o.Figures = v);
-
+    
     #endregion
 
     #region Public Properties
+
+    public CoordinateSystem CoordinateSystem { get; }
 
     public double PointerX
     {
@@ -122,21 +122,8 @@ public class Viewport : TemplatedControl, IStyleable
 
     public Viewport()
     {
-        _coordinateSystem = new CoordinateSystemLogic(this);
+        CoordinateSystem = new CoordinateSystem(this);
     }
-
-    #endregion
-
-    #region Public Methods
-
-    public Point GetGlobalPoint(in Point localPoint)
-        => _coordinateSystem.GetGlobalPoint(localPoint);
-
-    public Point GetLocalPoint(in Point globalPoint)
-        => _coordinateSystem.GetLocalPoint(globalPoint);
-
-    public Matrix GetLocalMatrix()
-        => _coordinateSystem.GetLocalMatrix();
 
     #endregion
 
@@ -194,22 +181,22 @@ public class Viewport : TemplatedControl, IStyleable
 
     private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
-        _coordinateSystem.PointerWheelChanged(e);
+        CoordinateSystem.PointerWheelChanged(e);
     }
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        _coordinateSystem.PointerPressed(e);
+        CoordinateSystem.PointerPressed(e);
     }
 
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
-        _coordinateSystem.PointerMoved(e);
+        CoordinateSystem.PointerMoved(e);
     }
 
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        _coordinateSystem.PointerReleased(e);
+        CoordinateSystem.PointerReleased(e);
     }
 
     private void UpdateFigures()

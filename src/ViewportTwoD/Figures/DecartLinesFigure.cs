@@ -11,9 +11,16 @@ public class DecartLinesFigure : Figure
         set => SetValue(StrokeProperty, value);
     }
 
+    public DecartLinesFigure()
+    {
+        IsShow = false;
+    }
 
     protected internal override void Render(DrawingContext context)
     {
+        if (!IsShow)
+            return;
+
         //TODO Заменить на нормальный расчет точек линий
         var deltaX = Viewport.DeltaX;
         var deltaY = Viewport.DeltaY;
