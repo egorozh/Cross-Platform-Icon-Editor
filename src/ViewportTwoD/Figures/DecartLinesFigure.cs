@@ -1,4 +1,6 @@
-﻿namespace ViewportTwoD;
+﻿using System.Collections;
+
+namespace ViewportTwoD;
 
 public class DecartLinesFigure : Figure
 {
@@ -21,25 +23,69 @@ public class DecartLinesFigure : Figure
         if (!IsShow)
             return;
 
-        //TODO Заменить на нормальный расчет точек линий
-        var deltaX = Viewport.DeltaX;
-        var deltaY = Viewport.DeltaY;
+        var (centerX, centerY) = Viewport.CoordinateSystem.GetLocalPoint(new Point(0, 0));
+        var width = Viewport.Bounds.Width;
+        var height = Viewport.Bounds.Height;
 
-        using (context.PushPreTransform(MatrixHelper.Rotation(Viewport.Angle * (Math.PI / 180.0), Viewport.DeltaX, Viewport.DeltaY)))
+        var k = Math.Tan(Viewport.Angle * (Math.PI / 180.0));
+        var b = centerY - k * centerX;
+
+        var success = GetLinePoints(b, k, height, width, out var p1, out var p2);
+
+        if (success)
+            context.DrawLine(new Pen(Stroke), p1, p2);
+
+        k = Math.Tan((Viewport.Angle + 90.0) * (Math.PI / 180.0));
+        b = centerY - k * centerX;
+
+        success = GetLinePoints(b, k, height, width, out p1, out p2);
+
+        if (success)
+            context.DrawLine(new Pen(Stroke), p1, p2);
+    }
+
+    private static bool GetLinePoints(double b1, double k1, double height, double width, out Point p1, out Point p2)
+    {
+        p1 = new Point(-b1 / k1, 0);
+        p2 = new Point((height - b1) / k1, height);
+        Point p3 = new(0, b1);
+        Point p4 = new(width, k1 * width + b1);
+
+        var isFindFirstPoint = CheckPoint(p1, width, height);
+        
+        if (CheckPoint(p2, width, height))
         {
-            context.DrawLine(new Pen(Stroke), new Point(-10000, deltaY), new Point(10000, deltaY));
-            context.DrawLine(new Pen(Stroke), new Point(deltaX, -10000), new Point(deltaX, 10000));
+            if (isFindFirstPoint)
+                return true;
+
+            p1 = p2;
+            isFindFirstPoint = true;
         }
 
-        //var (centerX, centerY) = Viewport.GetLocalPoint(new Point(0, 0));
+        if (CheckPoint(p3, width, height))
+        {
+            if (isFindFirstPoint)
+            {
+                p2 = p3;
+                return true;
+            }
 
-        //var width = Viewport.Bounds.Width;
-        //var height = Viewport.Bounds.Height;
+            p1 = p3;
+            isFindFirstPoint = true;
+        }
 
-        //if (centerX > 0 && centerX < width)
-        //    context.DrawLine(new Pen(Stroke), new Point(centerX, 0), new Point(centerX, height));
-
-        //if (centerY > 0 && centerY < height)
-        //    context.DrawLine(new Pen(Stroke), new Point(0, centerY), new Point(width, centerY));
+        if (CheckPoint(p4, width, height))
+        {
+            if (isFindFirstPoint)
+            {
+                p2 = p4;
+                return true;
+            }
+        }
+        
+        return false;
     }
+
+    private static bool CheckPoint(Point point, double width, double height)
+        => point.X >= 0 && point.X <= width && point.Y >= 0 && point.Y <= height;
 }
